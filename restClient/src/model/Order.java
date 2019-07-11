@@ -1,11 +1,12 @@
 package model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Order {
+public class Order implements Serializable{
 
 	private String order_id;
 	private List<Item> items;

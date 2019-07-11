@@ -1,9 +1,11 @@
 package model;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Item {
+public class Item implements Serializable{
 
 	private String item;
 	private int quantity;
