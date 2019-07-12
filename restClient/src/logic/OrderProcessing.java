@@ -1,6 +1,5 @@
 package logic;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import model.Item;
@@ -14,11 +13,15 @@ public class OrderProcessing {
 		this.order = order;
 	}
 
-	public void processOrder() {
+	public void createFinancialOrder() {
 
 		List<Item> items = order.getItems();
 		double totalTax = order.getTaxes();
 		double totalShipping = order.getShipping();
+		
+		System.out.println("order:"+order.getOrder_id()+"       Taxes:"+order.getTaxes()+"       Shipping:"+order.getShipping());
+		System.out.println("order:"+"       Taxes:"+order.getTaxes()+"       Shipping:"+order.getShipping());
+		
 		double totalDiscount = 0;
 		int totalQuantity = 0;
 		double totalAmount = 0;
@@ -29,15 +32,16 @@ public class OrderProcessing {
 		double totalTaxTemp = totalTax;
 		double discount = 0;
 
-		totalAmount = items.stream().mapToDouble(a -> a.getMsrp()).sum();
+		totalAmount = items.stream().mapToDouble(a -> a.getMsrp()*a.getQuantity()).sum();
 		int itemCount = items.size();
 		int iterationCount = 1;
 
 		for (Item item : items) {
+			System.out.println("item:"+item.getItem()+"       MRSP:"+item.getMsrp()+"      RP:"+item.getRetail_price());
 			amount = item.getMsrp();
 			if (iterationCount != itemCount) {
-				tax = Math.round(((amount / totalAmount) * totalTax) * 100d) / 100d;
-				shipping = Math.round(((amount / totalAmount) * totalShipping) * 100d) / 100d;
+				tax = Math.round((((amount*item.getQuantity()) / totalAmount) * totalTax) * 100d) / 100d;
+				shipping = Math.round((((amount*item.getQuantity()) / totalAmount) * totalShipping) * 100d) / 100d;
 			} else {
 				tax = totalTaxTemp;
 				shipping = totalShippingTemp;
@@ -62,7 +66,7 @@ public class OrderProcessing {
 		Item discountItem = new Item();
 		discountItem.setItem("Discount");
 		discountItem.setQuantity(totalQuantity);
-		discountItem.setAmount(-totalDiscount);
+		discountItem.setAmount(-Math.round(totalDiscount *100d)/100d);
 		discountItem.setShipping(0);
 		discountItem.setTaxes(0);
 		order.addItem(discountItem);
@@ -72,9 +76,9 @@ public class OrderProcessing {
 
 	}
 		
-	
 	public Order getProcessedOrder() {
 		return order;
 	}
 
+	
 }

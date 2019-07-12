@@ -36,6 +36,7 @@ public class Order implements Serializable{
 	public void addItem(Item item) {
 		items.add(item);
 	}
+
 	public double getShipping() {
 		return shipping;
 	}
@@ -51,5 +52,5 @@ public class Order implements Serializable{
 	public void setTaxes(double taxes) {
 		this.taxes = taxes;
 	}
-
+	
 }
