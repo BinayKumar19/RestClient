@@ -153,12 +153,12 @@ public class RestClient {
 		System.out.println("status code for Get request:" + response.getStatus());
 		System.out.println("response:" + res);
 
-		List<Order> orders2 = null, orders3 = new ArrayList<Order>();
+		List<Order> ordersTemp = null, orders = new ArrayList<Order>();
 		try {
 			// Convert Response String into a list of orders
 			ObjectMapper objectMapper = new ObjectMapper();
-			orders2 = objectMapper.readValue(res, orders3.getClass());
-			orders3 = objectMapper.convertValue(orders2, new TypeReference<List<Order>>() {
+			ordersTemp = objectMapper.readValue(res, orders.getClass());
+			orders = objectMapper.convertValue(ordersTemp, new TypeReference<List<Order>>() {
 			});
 
 		} catch (JsonParseException e) {
@@ -169,7 +169,7 @@ public class RestClient {
 			e.printStackTrace();
 		}
 
-		return orders3;
+		return orders;
 
 	}
 
@@ -182,14 +182,14 @@ public class RestClient {
 	 */
 	private void postOrder(List<Order> orders) {
 		OrderProcessing orderProcessing;
-		Order responseOrder;
+		Order financialOrder;
 
 		for (Order order : orders) {
 			orderProcessing = new OrderProcessing(order);
 			orderProcessing.createFinancialOrder();
-			responseOrder = orderProcessing.getProcessedOrder();
+			financialOrder = orderProcessing.getFinancialOrder();
 
-			Response postResponse = postRequestTarget.request().post(Entity.json(responseOrder));
+			Response postResponse = postRequestTarget.request().post(Entity.json(financialOrder));
 
 			String responseBody = postResponse.readEntity(String.class);
 			System.out.println("Post Respone Body:" + responseBody);

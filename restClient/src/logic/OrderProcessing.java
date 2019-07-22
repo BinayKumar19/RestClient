@@ -94,7 +94,7 @@ public class OrderProcessing {
 	 * 
 	 * @return Order object
 	 */
-	public Order getProcessedOrder() {
+	public Order getFinancialOrder() {
 		return order;
 	}
 
