@@ -36,10 +36,6 @@ public class OrderProcessing {
 		double totalTax = order.getTaxes();
 		double totalShipping = order.getShipping();
 
-		System.out.println("order:" + order.getOrder_id() + "       Taxes:" + order.getTaxes() + "       Shipping:"
-				+ order.getShipping());
-		System.out.println("order:" + "       Taxes:" + order.getTaxes() + "       Shipping:" + order.getShipping());
-
 		double totalDiscount = 0;
 		int totalQuantity = 0;
 		double totalAmount = 0;
@@ -55,8 +51,6 @@ public class OrderProcessing {
 		int iterationCount = 1;
 
 		for (Item item : items) {
-			System.out.println(
-					"item:" + item.getItem() + "       MRSP:" + item.getMsrp() + "      RP:" + item.getRetail_price());
 			amount = item.getMsrp();
 			if (iterationCount != itemCount) {
 				tax = Math.round((((amount * item.getQuantity()) / totalAmount) * totalTax) * 100d) / 100d;
