@@ -18,27 +18,32 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 
 import logic.ObjectSerialization;
 import logic.OrderProcessing;
-import model.Item;
 import model.Order;
 
+/**
+ * RestClient class: This class is used to handle interaction with the server.
+ * 
+ * @author binay
+ *
+ */
 public class RestClient {
 
 	private static final String REST_URI = "https://ops-interview.p.fullscript.io/";
-	Client client;
-	WebTarget baseTarget;
-	WebTarget getRequestTarget;
-	WebTarget postRequestTarget;
-	WebTarget authRequestTarget;
-	WebTarget startTestTarget;
-	WebTarget reStartTestTarget;
-	WebTarget scoreTarget;
+	private Client client;
+	private WebTarget baseTarget;
+	private WebTarget getRequestTarget;
+	private WebTarget postRequestTarget;
+	private WebTarget authRequestTarget;
+	private WebTarget startTestTarget;
+	private WebTarget reStartTestTarget;
+	private WebTarget scoreTarget;
 
-	String userName = "user_43712";
-	String password = "G45hDvzW5FnfTuBOAUDzIe0D";
+	// UserName and password specific to the Fullscript server
+	private String userName = "user_43712";
+	private String password = "G45hDvzW5FnfTuBOAUDzIe0D";
 
 	public RestClient() {
 		HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic(userName, password);
@@ -82,88 +87,107 @@ public class RestClient {
 		} else if (operation.equals("6")) {
 			rc.reStartTest();
 		} else {
-			if (operation.equals("3")) {
+			if (operation.equals("3")) { // receive list of orders from a GET Request
 				orders = rc.getOrders();
 				System.out.println("size of orders :" + orders.size());
 
-				// save get response to a file (Incase of Failure)
+				// save get response to a file (incase of a failure)
 				ObjectSerialization.serializeObjects(orders);
-			} else {
+
+			} else { // Fetch list of orders for the last GET from a file.
 				System.out.print("Enter your File name From which JSON data is to be loaded:");
 				String fileName = in.nextLine();
 				orders = ObjectSerialization.deserializeObjects(fileName);
 			}
 
+			// Send post request
 			rc.postOrder(orders);
 
 		}
 		in.close();
 	}
 
+	/**
+	 * Method to send the get request to the server to test the authentication.
+	 */
 	public void testAuthentication() {
-		Response response = authRequestTarget.request(MediaType.APPLICATION_JSON).get();
+		Response response = this.authRequestTarget.request(MediaType.APPLICATION_JSON).get();
 
 		System.out.println(response);
 	}
 
+	/**
+	 * Method to send the Post request to the server to start the test.
+	 */
 	public void startTest() {
 		Response response = this.startTestTarget.request(MediaType.APPLICATION_JSON).post(Entity.json(null));
 		System.out.println(response);
 	}
 
+	/**
+	 * Method to send the Post request to the server to re-start the test.
+	 */
 	public void reStartTest() {
 		Response response = this.reStartTestTarget.request(MediaType.APPLICATION_JSON).post(Entity.json(null));
 		System.out.println(response);
 	}
 
+	/**
+	 * Method to send the Get request to the server to get the score of the test.
+	 */
 	public void getScore() {
 		Response response = this.scoreTarget.request(MediaType.APPLICATION_JSON).get();
 		System.out.println(response);
 	}
 
+	/**
+	 * Method to send GET request to the server and return a list of orders.
+	 * 
+	 * @return List of orders
+	 */
 	private List<Order> getOrders() {
-		Response response = getRequestTarget.request(MediaType.APPLICATION_JSON)
-				// .request()
-				.get();
+		Response response = getRequestTarget.request(MediaType.APPLICATION_JSON).get();
 
+		// Receive the response as a String.
 		String res = response.readEntity(String.class);
 		System.out.println("status code for Get request:" + response.getStatus());
 		System.out.println("response:" + res);
 
 		List<Order> orders2 = null, orders3 = new ArrayList<Order>();
 		try {
+			// Convert Response String into a list of orders
 			ObjectMapper objectMapper = new ObjectMapper();
 			orders2 = objectMapper.readValue(res, orders3.getClass());
 			orders3 = objectMapper.convertValue(orders2, new TypeReference<List<Order>>() {
 			});
 
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		// List<Order> orders = response.readEntity(new GenericType<List<Order>>() {});
 		return orders3;
 
 	}
 
+	/**
+	 * Method to create a financial order and send it to the server as a POST
+	 * request.
+	 * 
+	 * @param orders
+	 *            List of orders fetched from the server.
+	 */
 	private void postOrder(List<Order> orders) {
 		OrderProcessing orderProcessing;
+		Order responseOrder;
 
 		for (Order order : orders) {
 			orderProcessing = new OrderProcessing(order);
 			orderProcessing.createFinancialOrder();
-			Order responseOrder = orderProcessing.getProcessedOrder();
-
-			Gson gson = new Gson();
-			String ResponseOrderJson = gson.toJson(responseOrder);
-			System.out.println("ResponseOrderJson:" + ResponseOrderJson);
+			responseOrder = orderProcessing.getProcessedOrder();
 
 			Response postResponse = postRequestTarget.request().post(Entity.json(responseOrder));
 

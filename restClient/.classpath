@@ -32,5 +32,10 @@
 	<classpathentry kind="lib" path="C:/Software/Java jar/jaxrs-ri/ext/validation-api-2.0.1.Final.jar"/>
 	<classpathentry kind="lib" path="C:/Software/Java jar/jaxrs-ri/ext/yasson-1.0.3.jar"/>
 	<classpathentry kind="lib" path="C:/Software/Java jar/java-json.jar"/>
+	<classpathentry kind="lib" path="C:/Software/Java jar/json-simple-2.3.0.jar"/>
+	<classpathentry kind="lib" path="C:/Software/Java jar/gson-2.8.2.jar"/>
+	<classpathentry kind="lib" path="C:/Software/Java jar/Jackson others/jackson-annotations-2.9.0.pr2.jar"/>
+	<classpathentry kind="lib" path="C:/Software/Java jar/Jackson others/jackson-core-2.9.0.pr2.jar"/>
+	<classpathentry kind="lib" path="C:/Software/Java jar/Jackson others/jackson-databind-2.9.0.pr2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -5,18 +5,24 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Order class to map the customer order.
+ * 
+ * @author binay
+ *
+ */
 @XmlRootElement
-public class Order implements Serializable{
+public class Order implements Serializable {
 
 	private String order_id;
 	private List<Item> items;
 	private double shipping;
-	private double taxes; 
-	
-	public Order(){
-	super();			
+	private double taxes;
+
+	public Order() {
+		super();
 	}
-	
+
 	public String getOrder_id() {
 		return order_id;
 	}
@@ -52,5 +58,5 @@ public class Order implements Serializable{
 	public void setTaxes(double taxes) {
 		this.taxes = taxes;
 	}
-	
+
 }

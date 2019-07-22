@@ -13,19 +13,32 @@ import java.util.List;
 
 import model.Order;
 
+/**
+ * ObjectSerialization class to save the GET request response to the file and
+ * read from the file, will be used if POST response got unsuccessful.
+ * 
+ * @author binay
+ *
+ */
 public class ObjectSerialization {
-	
-	public static void serializeObjects(List<Order> orders){
+
+	/**
+	 * Method to save the list of orders received from the server to a file.
+	 * 
+	 * @param orders
+	 *            List of orders.
+	 */
+	public static void serializeObjects(List<Order> orders) {
 		try {
-			String fileName = "Get_Response_"+System.currentTimeMillis()+".txt";
+			String fileName = "Get_Response_" + System.currentTimeMillis() + ".txt";
 			FileOutputStream f = new FileOutputStream(new File(fileName));
 			ObjectOutputStream o = new ObjectOutputStream(f);
 
 			// Write objects to file
-			for(Order order : orders) {
+			for (Order order : orders) {
 				o.writeObject(order);
 			}
-			
+
 			o.close();
 			f.close();
 
@@ -33,37 +46,43 @@ public class ObjectSerialization {
 			System.out.println(e.getMessage());
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
-		} 
+		}
 	}
-	
-	public static List<Order> deserializeObjects(String fileName){
+
+	/**
+	 * Method to read list of orders from a given file.
+	 * 
+	 * @param fileName
+	 *            File from which list of orders to be read
+	 * @return List of orders read from the given file.
+	 */
+	public static List<Order> deserializeObjects(String fileName) {
 		List<Order> orders = new ArrayList<>();
 		try {
-			
+
 			FileInputStream fi = new FileInputStream(new File(fileName));
 			ObjectInputStream oi = new ObjectInputStream(fi);
 
 			boolean cont = true;
-			while(cont){
+			while (cont) {
 				Order order = (Order) oi.readObject();
-			      if(order != null)
-			         orders.add(order);
-			      else
-			         cont = false;
-			   }
-			
+				if (order != null)
+					orders.add(order);
+				else
+					cont = false;
+			}
+
 			oi.close();
 			fi.close();
 
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
-		}catch (EOFException e) {			
+		} catch (EOFException e) {
 			System.out.println(e.getMessage());
-		}catch (IOException e) {
+		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		return orders;
 	}
